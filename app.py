@@ -9,11 +9,17 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
 load_dotenv()
 
+import os
+
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+DB_PATH = os.path.join(BASE_DIR, "shelfbuddy.db")
+
 def get_db_connection():
-    conn = sqlite3.connect("shelfbuddy.db")
+    conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
 
+print("DB PATH:", DB_PATH)
 
 app = Flask(__name__)
 

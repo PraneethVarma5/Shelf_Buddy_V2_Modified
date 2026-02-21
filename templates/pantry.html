@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Your Pantry</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f6f9;
+        }
+
+        .pantry-container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        .item-card {
+            background: white;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            position: relative;
+            transition: opacity 0.2s ease;
+        }
+
+        .expired { border-left: 6px solid red; }
+        .safe { border-left: 6px solid green; }
+        .soon { border-left: 6px solid orange; }
+
+        .deleteBtn {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .deleteBtn:hover { opacity: 0.85; }
+
+        .expiry-badge {
+            background: #13182e;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .hidden { display: none; }
+
+        .empty-message {
+            text-align: center;
+            font-size: 18px;
+            color: #666;
+            margin-top: 40px;
+        }
+        
+/* ================= PANTRY NAV BUTTONS ================= */
+
+/* ================= NAVBAR GLOBAL ================= */
+
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: #ffffff;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    z-index: 1000;
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nav-logo {
+    height: 35px;
+}
+
+.nav-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #13182e;
+}
+
+.nav-right {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.nav-btn {
+    padding: 8px 18px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.btn-green {
+    background: #3ba55d;
+    color: white;
+}
+
+.btn-green:hover {
+    background: #2f8f4a;
+}
+
+.btn-outline {
+    border: 2px solid #3ba55d;
+    color: #3ba55d;
+    background: transparent;
+}
+
+.btn-outline:hover {
+    background: #3ba55d;
+    color: white;
+}
+
+.btn-dark {
+    background: #13182e;
+    color: white;
+}
+
+.btn-dark:hover {
+    background: #1e2442;
+}
+
+/* ================= PAGE BODY OFFSET ================= */
+
+.page-body {
+    margin: 0;
+    padding-top: 90px;
+}
+@media (max-width: 768px) {
+
+    .nav-container {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .nav-right {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .item-card {
+        padding: 15px;
+    }
+
+    .deleteBtn {
+        position: static;
+        margin-top: 10px;
+        width: 100%;
+    }
+
+    .expiry-badge {
+        flex-direction: column;
+        gap: 6px;
+        align-items: flex-start;
+    }
+}
+    </style>
+        <link rel="icon" type="image/png" href="{{ url_for('static', filename='shelfbuddy.png') }}">
+
+</head>
+<body class="page-body">
+
+<header class="navbar">
+    <div class="nav-container">
+        <div class="nav-left">
+            <img src="{{ url_for('static', filename='shelfbuddy.png') }}" class="nav-logo">
+            <span class="nav-title">Shelf Buddy</span>
+        </div>
+
+        <div class="nav-right">
+            <a href="/home" class="nav-btn btn-green">Calculator</a>
+            <a href="/suggest-recipe" class="nav-btn btn-outline">Find Recipes</a>
+            <a href="/logout" class="nav-btn btn-dark">Logout</a>
+        </div>
+    </div>
+</header>
+
+
+
+    <h2>{{ session.get('username') }}'s Pantry</h2>
+
+    <!-- Stats Badge -->
+    <div id="expiryBadge" class="expiry-badge hidden">
+        <span id="badgeExpired"></span>
+        <span id="badgeSoon"></span>
+        <span id="badgeSafe"></span>
+        <span id="badgeTotal"></span>
+    </div>
+
+    {% if items %}
+        {% for item in items %}
+            {% set status_class = "safe" %}
+            {% if item.days_left < 0 %}
+                {% set status_class = "expired" %}
+            {% elif item.days_left <= 3 %}
+                {% set status_class = "soon" %}
+            {% endif %}
+
+            <div class="item-card {{ status_class }}">
+                <strong>{{ item.product }}</strong><br>
+                Expiry Date: {{ item.expiry_date }}<br>
+
+                {% if item.days_left < 0 %}
+                    ❌ Expired {{ item.days_left|abs }} day(s) ago
+                {% else %}
+                    ✅ {{ item.days_left }} day(s) left
+                {% endif %}
+
+                <button class="deleteBtn" data-id="{{ item.id }}">
+                    Delete
+                </button>
+            </div>
+
+        {% endfor %}
+    {% else %}
+        <div class="empty-message">
+            Your Pantry is Empty. Start saving items.🥲 
+        </div>
+    {% endif %}
+
+</div>
+
+<script>
+
+// LOAD STATS
+async function loadPantryStats() {
+    const res = await fetch('/pantry-stats');
+    const data = await res.json();
+
+    const badge = document.getElementById('expiryBadge');
+    badge.classList.remove('hidden');
+
+    document.getElementById('badgeExpired').innerText = `🔴 Expired: ${data.expired}`;
+    document.getElementById('badgeSoon').innerText = `🟡 Soon: ${data.soon}`;
+    document.getElementById('badgeSafe').innerText = `🟢 Safe: ${data.safe}`;
+    document.getElementById('badgeTotal').innerText = `📦 Total: ${data.total}`;
+}
+
+loadPantryStats();
+
+
+// FAST DELETE (Optimistic UI)
+document.querySelectorAll('.deleteBtn').forEach(btn => {
+    btn.addEventListener('click', async function() {
+
+        const card = this.closest('.item-card');
+        const itemId = this.dataset.id;
+
+        // remove instantly
+        card.style.opacity = "0.4";
+
+        const res = await fetch('/delete-from-pantry', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ item_id: itemId })
+        });
+
+        const data = await res.json();
+
+        if (data.status === "success") {
+            card.remove();
+            loadPantryStats();
+        } else {
+            card.style.opacity = "1";
+            alert(data.message);
+        }
+    });
+});
+
+</script>
+
+</body>
+</html>

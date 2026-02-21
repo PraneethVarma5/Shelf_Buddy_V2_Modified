@@ -1,0 +1,282 @@
+<!--
+main.html
+This HTML file represents the user interface for the "Shelf Buddy" web app,
+which helps users track food expiry dates based on product type, storage conditions, and whether opened.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"> <!-- Declares UTF-8 character encoding -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Ensures responsiveness -->
+
+    <meta name="description" content="Shelf Buddy is a smart expiry tracker that predicts shelf life, reduces waste, and manages inventory using lightweight AI algorithms. Available as a web app." />
+<meta name="keywords" content="Shelf Buddy, expiry tracker, shelf life prediction, inventory tracker, food waste reduction, AI expiry prediction" />
+<meta name="author" content="Praneeth Varma" />
+<link rel="canonical" href="https://shelf-buddy.onrender.com/" />
+<meta name="robots" content="index, follow" />
+<!-- Open Graph for social shares -->
+<meta property="og:title" content="Shelf Buddy — Smart Expiry Tracker" />
+<meta property="og:description" content="AI-driven expiry tracking and shelf-life prediction to reduce waste and manage inventory." />
+<meta property="og:url" content="https://shelf-buddy.onrender.com/" />
+<meta property="og:type" content="website" />
+<meta property="og:image" content="https://shelf-buddy.onrender.com/images/og-image.png" />
+
+<title>Shelf Buddy— Smart Expiry & Inventory Tracker</title> <!-- Browser tab title -->
+    <meta name="google-site-verification" content="MNKzc0zxW2Tu3AXmU4uy3QhHOWHxekgImUvFiGSBbU8" />
+    <!-- Font Awesome CDN for using icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Link external stylesheet for UI styling -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<script src="{{ url_for('static', filename='script.js') }}" defer></script>
+
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='shelfbuddy.png') }}">
+
+
+    
+
+    
+
+
+    
+</head>
+<body>
+
+    <!-- <img src="{{ url_for('static', filename='shelfbuddy.png') }}" alt="ShelfBuddy Logo" width=auto height=40 class="logo">
+    <div class="Main-head">
+                <h1><B>Shelf Buddy</h1></B>
+    </div>
+
+<div class="top-user-bar">
+    <div class="user-info">
+        <strong>
+            {% if session.get('user_id') %}
+                Welcome, {{ session.get('username') }}
+            {% elif session.get('guest') %}
+                Welcome, Guest
+            {% else %}
+                Welcome
+            {% endif %}
+        </strong>
+    </div>
+
+    <div class="top-actions">
+
+        {% if session.get('user_id') %}
+            <a href="/pantry" class="nav-btn">Pantry</a>
+        {% endif %}
+
+        <a href="/suggest-recipe" class="nav-btn">Find Recipes</a>
+
+        <a href="/logout" class="logout-btn">
+            {% if session.get('guest') %}
+                Exit Guest
+            {% else %}
+                Logout
+            {% endif %}
+        </a>
+
+    </div>
+</div> -->
+
+<header class="navbar">
+    <div class="nav-left">
+        <img src="{{ url_for('static', filename='shelfbuddy.png') }}" class="nav-logo">
+        <span class="nav-title">Shelf Buddy</span>
+    </div>
+
+    <div class="nav-right">
+        <span class="welcome-text">
+            {% if session.get('guest') %}
+                Welcome, Guest
+            {% else %}
+                Welcome, {{ session.get('username') }}
+            {% endif %}
+            {% if session.get('role') == 'admin' %}
+            <a href="/admin" class="admin-link">Admin</a>
+            {% endif %}
+        </span>
+
+        <a href="/pantry" class="nav-btn green">Pantry</a>
+        <a href="/suggest-recipe" class="nav-btn green-outline">Find Recipes</a>
+        <a href="/logout" class="nav-btn dark">Logout</a>
+    </div>
+</header>
+
+<section class="hero">
+    <h1>Keep Track of Your Food Expiry Dates</h1>
+    <p>Calculate expiry dates and reduce food waste with Shelf Buddy.</p>
+</section>
+
+
+
+
+    <!-- Core application area -->
+    <div class="container">
+        
+        <!-- Checkbox to indicate if user knows the manufacturing date -->
+        <div class="checkbox-container">
+            <input type="checkbox" id="manufacturingDate">
+           <label for="manufacturingDate" class="manufacturing-label">
+    Do You Know the Manufacturing Date?
+    <span class="manufacturing-optional">(optional)</span>
+</label>
+
+        </div>
+
+        <!-- Date input field, shown only if checkbox above is checked -->
+        <input type="date" class="date-input" id="dateInput">
+
+<p style="font-weight:700; font-size:15px; color:#2c2c2c; letter-spacing:0.3px; margin-bottom:8px;">
+    Enter a Product Name
+</p>
+        <!-- Search box for custom product entry (hidden initially) -->
+        <div class="product-search-container relative" id="productSearchContainer">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" class="product-search" placeholder="Search for a product...">
+        </div>
+
+        <!-- Section for selecting storage conditions -->
+         <p></p>
+        <div class="storage-label">Storage Condition</div>
+        <div class="storage-options">
+            <!-- Room temperature option -->
+            <div class="storage-option active" data-storage="room">
+                <div class="temp-icon"><i class="fas fa-thermometer-half"></i></div>
+                <div class="temp-name">Room</div>
+                <div class="temp-range">(25-35°C)</div>
+            </div>
+            <!-- Refrigerated option -->
+            <div class="storage-option" data-storage="refrigerated">
+                <div class="temp-icon"><i class="fas fa-snowflake"></i></div>
+                <div class="temp-name">Refrigerated</div>
+                <div class="temp-range">(2-8°C)</div>
+            </div>
+            <!-- Frozen option -->
+            <div class="storage-option" data-storage="frozen">
+                <div class="temp-icon"><i class="fas fa-icicles"></i></div>
+                <div class="temp-name">Frozen</div>
+                <div class="temp-range">(below 0°C)</div>
+            </div>
+        </div>
+
+        <!-- Toggle switch for indicating opened product -->
+        <div class="toggle-container">
+            <label class="toggle">
+                <input type="checkbox" id="openedToggle">
+                <span class="slider"></span> <!-- Custom toggle slider -->
+            </label>
+            <span>Product has been opened</span>
+        </div>
+
+        <!-- Button to show shelf life or expiry date based on user input -->
+        <button class="button" id="actionButton">Show Shelf Life</button>
+
+        <!-- <div id="outputBox" class="tagline"></div> -->
+        <div id="resultCard" class="result-card hidden">
+            <div class="result-title" id="resultTitle"></div>
+            <div class="result-status" id="resultStatus"></div>
+            <div class="result-expiry" id="resultExpiry"></div>
+        </div>
+        <div id="categoryResult" class="category-result"></div>
+        <button id="savePantryBtn" style="display:none;">Save to Pantry</button>
+
+
+
+        <!-- Expandable section: Warning message -->
+        <div class="info-section">
+            <div class="info-header" id="warningHeader">
+                <i class="fas fa-exclamation-triangle info-icon"></i>
+                <span class="info-title">Warning</span>
+                <i class="fas fa-chevron-down arrow-icon" id="warningArrow"></i>
+            </div>
+            <div class="info-content" id="warningContent">
+                <div class="info-item">
+                    <div class="info-item-text">
+                        The shelf life and expiry dates may vary depending on brand, storage, temperature, and other conditions. Always verify with the label or consult a healthcare provider for medicines.
+                    </div>
+                </div>
+                <div class="info-note">
+                    This is a general guideline and should not replace medical or product-specific advice.
+                </div>
+            </div>
+        </div>
+        <!-- Expandable section: Shelf Life Tips -->
+<div class="info-section">
+  <div class="info-header" id="tipsHeader">
+    <i class="fas fa-info-circle info-icon"></i>
+    <span class="info-title">Key Points to know about Shelf Buddy</span>
+    <i class="fas fa-chevron-down arrow-icon" id="tipsArrow"></i>
+  </div>
+  <div class="info-content" id="tipsContent">
+    <div class="info-item">
+      <div class="info-item-title">Date Formate</div>
+      <div class="info-item-text">The date should be entered in month/date/year format only and the output will be in Year/Month/Date format</div>
+    </div>
+    <div class="info-item">
+      <div class="info-item-title">N/A Shelf Life</div>
+      <div class="info-item-text">N/A Shelf life means that product is not recommended for that storage condition.And you can see the result as invalid date even if you enter correct date because the of N/A as previously mentioned</div>
+    </div>
+    <div class="info-item">
+      <div class="info-item-title">Product Not Found</div>
+      <div class="info-item-text">Our database uses specific names. If your item isn't found, check for plurals (e.g., try "Potato" instead of "Potatoes") or check your spelling. If it's still not found, it may not be in our database. </div>
+    </div>
+  </div>
+</div>
+
+        <!-- Expandable section: Expiry definitions -->
+        <div class="info-section">
+            <div class="info-header" id="expiryTermsHeader">
+                <i class="fas fa-info-circle info-icon"></i>
+                <span class="info-title">Understanding Expiry Terms</span>
+                <i class="fas fa-chevron-down arrow-icon" id="expiryArrow"></i>
+            </div>
+            <div class="info-content" id="expiryContent">
+                <div class="info-item">
+                    <div class="info-item-title">Shelf Life</div>
+                    <div class="info-item-text">Time a product can be stored while maintaining quality.</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-item-title">Best Before Date</div>
+                    <div class="info-item-text">Date after which product quality may degrade but still be safe.</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-item-title">Expiry Date</div>
+                    <div class="info-item-text">Date after which product may no longer be safe for use.</div>
+                </div>
+                <div class="info-note">Note: Opened and improperly stored items expire sooner.</div>
+            </div>
+        </div>
+
+        <!-- Expandable section: Effects of storage -->
+        <div class="info-section">
+            <div class="info-header" id="storageImpactHeader">
+                <i class="fas fa-info-circle info-icon"></i>
+                <span class="info-title">Storage Impact on Products</span>
+                <i class="fas fa-chevron-down arrow-icon" id="storageArrow"></i>
+            </div>
+            <div class="info-content" id="storageContent">
+                <div class="info-item">
+                    <div class="info-item-title">Room Temperature</div>
+                    <div class="info-item-text">For dry, shelf-stable goods (e.g., rice, snacks).</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-item-title">Refrigerated</div>
+                    <div class="info-item-text">Slows spoilage for perishables like milk or veggies.</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-item-title">Frozen</div>
+                    <div class="info-item-text">Best for preserving meat, meals for long durations.</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-item-title">Opened Products</div>
+                    <div class="info-item-text">Usually need quicker consumption even if refrigerated.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="toast" class="toast hidden"></div>
+
+</body>
+</html>

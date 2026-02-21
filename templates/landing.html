@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Shelf Buddy — Smart Expiry Tracker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='shelfbuddy.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='landing.css') }}">
+    <script defer src="{{ url_for('static', filename='landing.js') }}"></script>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">Shelf Buddy</div>
+        <div class="nav-buttons">
+            <a href="/login" class="nav-link">Login</a>
+            <a href="/register" class="nav-link primary">Register</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1>Never Let Food Expire Unnoticed</h1>
+        <p>Smart expiry prediction. Personal pantry tracking. Zero waste mindset.</p>
+
+        <div class="hero-buttons">
+            <a href="/register" class="btn primary">Get Started</a>
+            <a href="/guest" class="btn secondary">Continue as Guest</a>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="feature-card">
+            <h3>📦 Shelf Life Calculator</h3>
+            <p>Storage-based prediction with opened & unopened logic.</p>
+        </div>
+
+        <div class="feature-card">
+            <h3>🧊 Smart Storage Awareness</h3>
+            <p>Room, refrigerated, frozen — realistic condition modeling.</p>
+        </div>
+
+        <div class="feature-card">
+            <h3>🗂 Personal Pantry</h3>
+            <p>Track items. Sort by expired, soon, safe. Stay organized.</p>
+        </div>
+
+        <div class="feature-card">
+            <h3>🔐 Secure Accounts</h3>
+            <p>Login system with personal data isolation.</p>
+        </div>
+    </section>
+
+
+<section class="suggestion-section">
+    <div class="suggestion-container">
+        <h2>Help Us Improve Shelf Buddy</h2>
+        <p>Your feedback shapes the future of smarter food management.</p>
+
+        <form id="suggestionForm">
+            <input type="email" id="suggestionEmail" placeholder="Your email (optional)">
+            <textarea id="suggestionText" placeholder="Share your suggestion..." required></textarea>
+            <button type="submit">Send Suggestion</button>
+        </form>
+
+        <div id="suggestionMessage" class="suggestion-message"></div>
+    </div>
+</section>
+
+    <footer>
+        © Shelf Buddy • Developed by Praneeth Varma Alluri
+    </footer>
+
+</body>
+</html>

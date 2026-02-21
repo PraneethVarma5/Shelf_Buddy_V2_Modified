@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            font-family: Arial;
+            padding: 30px;
+            background: #f4f4f4;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            margin-top: 40px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        th {
+            background: #13182e;
+            color: white;
+        }
+        .admin-nav {
+        margin-bottom: 20px;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 8px 14px;
+        margin-right: 10px;
+        text-decoration: none;
+        background: #13182e;
+        color: white;
+        border-radius: 5px;
+        font-size: 14px;
+    }
+
+    .btn:hover {
+        opacity: 0.85;
+    }
+
+    .logout {
+        background: #d9534f;
+    }
+    </style>
+</head>
+<body>
+
+<h1>Admin Dashboard</h1>
+<div class="admin-nav">
+    <a href="/home" class="btn">Home</a>
+    <a href="/logout" class="btn logout">Logout</a>
+</div>
+<h2>Users</h2>
+<table>
+<tr>
+    <th>ID</th>
+    <th>Username</th>
+    <th>Email</th>
+    <th>Role</th>
+</tr>
+{% for user in users %}
+<tr>
+    <td>{{ user.id }}</td>
+    <td>{{ user.username }}</td>
+    <td>{{ user.email }}</td>
+    <td>{{ user.role }}</td>
+</tr>
+{% endfor %}
+</table>
+
+<h2>Suggestions</h2>
+<table>
+<tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Email</th>
+    <th>Message</th>
+    <th>Date</th>
+</tr>
+{% for suggestion in suggestions %}
+<tr>
+    <td>{{ suggestion.id }}</td>
+    <td>{{ suggestion.name }}</td>
+    <td>{{ suggestion.email }}</td>
+    <td>{{ suggestion.message }}</td>
+    <td>{{ suggestion.created_at }}</td>
+</tr>
+{% endfor %}
+</table>
+
+
+<h2>Products</h2>
+<table>
+<tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Category</th>
+</tr>
+{% for product in products %}
+<tr>
+    <td>{{ product.id }}</td>
+    <td>{{ product.name }}</td>
+    <td>{{ product.category }}</td>
+</tr>
+{% endfor %}
+</table>
+
+
+</body>
+</html>

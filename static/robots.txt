@@ -1,0 +1,6 @@
+# Allow all search engines to crawl the whole site
+User-agent: *
+Allow: /
+
+# Point to your sitemap (update this URL)
+Sitemap: https://shelf-buddy.onrender.com/sitemap.xml

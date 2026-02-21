@@ -475,7 +475,7 @@ def get_recipes():
         [i for i in [ingredient1, ingredient2, ingredient3] if i]
     )
 
-    api_key = "f2a1f02ecc784581b1a119d2bb0f740a"
+    api_key = os.getenv("SPOONACULAR_API_KEY")
 
     url = "https://api.spoonacular.com/recipes/complexSearch"
 

@@ -75,6 +75,27 @@ CREATE TABLE IF NOT EXISTS users (
         created_at TEXT DEFAULT CURRENT_TIMESTAMP
     )
     """)
+    
+     products = [
+        ("Rice", "food", 180, 90, 365, 180, 0, 0),
+        ("Basmati Rice", "food", 365, 180, 365, 180, 0, 0),
+        ("Milk", "food", 0, 0, 5, 3, 0, 0),
+        ("Eggs", "food", 7, 0, 30, 0, 0, 0),
+        ("Chicken", "food", 0, 0, 2, 2, 365, 180),
+        # Add the rest here
+    ]
+
+    cur.executemany("""
+        INSERT OR IGNORE INTO products
+        (name, category,
+         shelf_life_room_closed,
+         shelf_life_room_opened,
+         shelf_life_refrigerated_closed,
+         shelf_life_refrigerated_opened,
+         shelf_life_frozen_closed,
+         shelf_life_frozen_opened)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    """, products)
 
     conn.commit()
     conn.close()
@@ -520,8 +541,6 @@ def admin_dashboard():
     )
 
 create_tables()
-from populate_sqlite import populate_products
-populate_products()
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 10000))
     app.run(debug=True, host='0.0.0.0', port=port)

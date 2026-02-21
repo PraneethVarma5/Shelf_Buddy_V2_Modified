@@ -73,7 +73,6 @@ CREATE TABLE IF NOT EXISTS users (
     conn.commit()
     conn.close()
 
-app.secret_key = "super_secret_key"
 
 CORS(app)
 
@@ -326,22 +325,6 @@ def pantry_stats():
         "total": expired + soon + safe
     })
 
-
-
-# Route for robots.txt
-@app.route('/robots.txt')
-def serve_robots():
-    return send_from_directory(
-        os.path.join(app.root_path, 'static'),
-        'robots.txt',
-        mimetype='text/plain'
-    )
-
-# Route for sitemap.xml
-@app.route('/sitemap.xml')
-def sitemap_xml():
-    return send_from_directory(app.static_folder, 'sitemap.xml')
-
 @app.route('/get-product', methods=['POST'])
 def get_product():
     data = request.json
@@ -420,16 +403,6 @@ def first_page():
 def home():
     return render_template("main.html")
 
-# Debug route to check users in the database
-# @app.route('/debug-users')
-# def debug_users():
-#     conn = get_db_connection()
-#     cur = conn.cursor()
-#     cur.execute("SELECT id, username, email FROM users")
-#     users = cur.fetchall()
-#     cur.close()
-#     conn.close()
-#     return str(users)
 
 @app.route('/submit-suggestion', methods=['POST'])
 def submit_suggestion():
@@ -481,7 +454,7 @@ def get_recipes():
 
     params = {
         "apiKey": api_key,
-        "query": ingredient1,  # 🔥 THIS is important
+        "query": ingredient1, 
         "number": 4,
         "offset": offset,
         "addRecipeInformation": True
@@ -498,14 +471,6 @@ def get_recipes():
 
     return jsonify(response.json())
 
-# @app.route('/debug-suggestions')
-# def debug_suggestions():
-#     conn = get_db_connection()
-#     cur = conn.cursor()
-#     cur.execute("SELECT * FROM suggestions")
-#     rows = cur.fetchall()
-#     conn.close()
-#     return str(rows)
 
 from functools import wraps
 
